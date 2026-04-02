@@ -165,7 +165,7 @@ resource "random_password" "generated_password" {
 }
 
 resource "azurerm_key_vault_secret" "password" {
-  name         = "psql-admin-password"
+  name         = "${local.postgre-sql-server-name}-psql-admin-password"
   value        = random_password.generated_password.result
   key_vault_id = var.key_vault.id
 }
