@@ -1,4 +1,7 @@
 # terraform-azurerm-caf-flex-postgreSQL
+
+Terraform CAF module for deploying an Azure PostgreSQL Flexible Server with Customer Managed Key, AD authentication, optional high availability, maintenance window, firewall rules, private endpoints, and per-database configuration.
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
