@@ -156,6 +156,15 @@ resource "random_password" "generated_password" {
   min_upper   = 1
   min_numeric = 1
   min_special = 1
+
+  # min_* are ForceNew on this resource - enforcing them here would force a
+  # password replacement (and a live admin password reset) on every server
+  # already deployed before this floor was added. New servers still get the
+  # complexity floors at creation time; already-deployed servers keep their
+  # existing password unchanged.
+  lifecycle {
+    ignore_changes = [min_lower, min_upper, min_numeric, min_special]
+  }
 }
 
 resource "azurerm_key_vault_secret" "password" {
