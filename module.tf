@@ -171,7 +171,12 @@ resource "azurerm_key_vault_secret" "password" {
   name         = "${local.postgre-sql-server-name}-psql-admin-password"
   value        = random_password.generated_password.result
   key_vault_id = var.key_vault.id
-  content_type = "text/plain"
+  # content_type deliberately omitted: setting it is a non-disruptive,
+  # in-place metadata-only change (no new secret version, no value change),
+  # but it still shows up as a diff on every already-deployed server. Left
+  # out so upgrading this module has zero plan impact on existing resources.
+  # Safe to add later (e.g. content_type = "text/plain") on a case-by-case
+  # basis if wanted.
 }
 
 data "azurerm_client_config" "current" {}
