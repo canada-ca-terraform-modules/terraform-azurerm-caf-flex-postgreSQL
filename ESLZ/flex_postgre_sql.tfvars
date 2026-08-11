@@ -84,10 +84,13 @@ flex_postgre_sql_servers = {
       }
     }
 
+    # Example only - scope firewall_rules to the narrowest real range you
+    # need. Never use an any-to-any (0.0.0.0 -> 255.255.255.255) rule; it
+    # opens the server to the entire public internet.
     firewall_rules = {
       rule1 = {
-        start_ip_address = "0.0.0.0"
-        end_ip_address   = "255.255.255.255"
+        start_ip_address = "10.0.0.0"
+        end_ip_address   = "10.255.255.255"
       }
     }
     managed_key = { #Manages a Customer Managed Key for a PostgreSQL Server

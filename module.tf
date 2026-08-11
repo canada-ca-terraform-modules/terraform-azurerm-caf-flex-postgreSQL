@@ -20,11 +20,14 @@ resource "azurerm_postgresql_flexible_server" "server" {
   create_mode      = try(var.flex_postgresql_server.create_mode, "Default")
   source_server_id = try(var.flex_postgresql_server.source_server_id, null)
 
-  sku_name          = var.flex_postgresql_server.sku_name
-  version           = var.flex_postgresql_server.version
+  sku_name = var.flex_postgresql_server.sku_name
+  version  = var.flex_postgresql_server.version
+  # Supports both the nested `storage.storage_mb` shape and the legacy flat
+  # `storage_mb` shape for backward compatibility with existing callers.
   storage_mb        = try(var.flex_postgresql_server.storage.storage_mb, try(var.flex_postgresql_server.storage_mb, 32768))
   storage_tier      = try(var.flex_postgresql_server.storage_tier, null)
   auto_grow_enabled = try(var.flex_postgresql_server.auto_grow_enabled, false)
+  zone              = try(var.flex_postgresql_server.zone, null)
 
   identity {
     type         = "UserAssigned"
@@ -71,8 +74,6 @@ resource "azurerm_postgresql_flexible_server" "server" {
   }
 }
 
-
-
 resource "azurerm_postgresql_flexible_server_database" "db" {
   for_each  = var.flex_postgresql_server.postgresql_databases
   name      = each.key
@@ -86,16 +87,12 @@ resource "azurerm_postgresql_flexible_server_database" "db" {
   }
 }
 
-
-
 resource "azurerm_postgresql_flexible_server_configuration" "config" {
   for_each  = try(var.flex_postgresql_server.postgre_sql_configuration, {})
   name      = each.key
   server_id = azurerm_postgresql_flexible_server.server.id
   value     = each.value
 }
-
-
 
 resource "azurerm_postgresql_flexible_server_active_directory_administrator" "admin" {
   for_each            = try(var.flex_postgresql_server.ad_administrators, {})
@@ -107,7 +104,6 @@ resource "azurerm_postgresql_flexible_server_active_directory_administrator" "ad
   principal_type      = each.value.principal_type
 }
 
-
 resource "azurerm_postgresql_flexible_server_firewall_rule" "firewall" {
   for_each         = try(var.flex_postgresql_server.firewall_rules, {})
   name             = "${local.postgre-sql-server-name}-${each.key}-fw"
@@ -116,13 +112,13 @@ resource "azurerm_postgresql_flexible_server_firewall_rule" "firewall" {
   end_ip_address   = each.value.end_ip_address
 }
 
-
-
+# Grants the server's own managed identity permission to wrap/unwrap the
+# customer-managed key used below - required for the flexible server to
+# access the key at runtime.
 resource "azurerm_role_assignment" "key_vault_role_assignment" {
   scope                = var.key_vault.id
-  role_definition_name = "Key Vault Crypto Officer" # Use the role you need
+  role_definition_name = "Key Vault Crypto Officer"
   principal_id         = azurerm_user_assigned_identity.pgsql.principal_id
-
 }
 
 resource "azurerm_key_vault_key" "key" {
@@ -137,10 +133,6 @@ resource "azurerm_key_vault_key" "key" {
   ]
 
 }
-
-
-
-
 
 # Calls this module if we need a private endpoint attached to the storage account
 module "private_endpoint" {
@@ -157,20 +149,21 @@ module "private_endpoint" {
   tags                           = var.tags
 }
 
-
-
 resource "random_password" "generated_password" {
-  length  = 16
-  special = true
+  length      = 16
+  special     = true
+  min_lower   = 1
+  min_upper   = 1
+  min_numeric = 1
+  min_special = 1
 }
 
 resource "azurerm_key_vault_secret" "password" {
   name         = "${local.postgre-sql-server-name}-psql-admin-password"
   value        = random_password.generated_password.result
   key_vault_id = var.key_vault.id
+  content_type = "text/plain"
 }
-
-
 
 data "azurerm_client_config" "current" {}
 

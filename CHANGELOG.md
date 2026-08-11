@@ -37,6 +37,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   `azurerm_key_vault_key`, `azurerm_key_vault_secret`, `azurerm_role_assignment`)
   are present in the azurerm 5.0 upgrade guide's breaking-changes list — this is a
   version-constraint and housekeeping upgrade only, with no compat shims required.
+- Verified `azurerm_postgresql_flexible_server_active_directory_administrator`'s
+  `server_name`/`resource_group_name` arguments remain valid (not deprecated in
+  favour of a `server_id`) against the azurerm 5.0.1 provider docs.
+
+### Fixed (review follow-up)
+
+- `zone` is now forwarded from `flex_postgresql_server.zone` instead of being
+  silently dropped (initial placement only — `lifecycle.ignore_changes` still
+  covers drift).
+- Removed `README copy.md`, a stray file containing unrelated
+  `terraform-azurerm-caf-windows_clusterV2` documentation.
+- `random_password.generated_password` now enforces `min_lower`/`min_upper`/
+  `min_numeric`/`min_special` so generated passwords can't fail Azure's
+  complexity policy at deploy time.
+- `azurerm_key_vault_secret.password` now sets `content_type`.
+- Replaced the any-to-any (`0.0.0.0` → `255.255.255.255`) example firewall
+  rule in `ESLZ/flex_postgre_sql.tfvars` with a representative private range.
+- Clarified `private_dns_zone_ids`'s description (was mislabeled `(Required)`
+  despite defaulting to `null` and being genuinely optional) and documented
+  why `user_data` is accepted but unused.
+- `release.yml`'s version-extraction regex is now anchored to this module's
+  own source line instead of matching the first `vX.Y.Z` ref in the file, and
+  the PR body used as release notes is now length-truncated.
+- `terraform-ci.yml`'s `terraform test` step now passes `-test-directory=tests`
+  explicitly.
 
 ## v1.1.0 - 2026-04-02
 
@@ -48,7 +73,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Unique Key Vault secret name per server; fixed tfvars key mismatch; removed
   unused field.
 
-## v1.0.0 - 2026-04-02
+## v1.0.0 - 2025-05-26
 
 ### Added
 

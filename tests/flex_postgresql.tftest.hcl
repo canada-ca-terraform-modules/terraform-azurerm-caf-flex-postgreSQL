@@ -198,3 +198,93 @@ run "no_high_availability" {
     error_message = "high_availability block must be absent when not configured"
   }
 }
+
+run "zone_is_forwarded" {
+  command = plan
+
+  variables {
+    flex_postgresql_server = {
+      resource_group  = "Project"
+      key_vault_group = "Keyvault"
+      sku_name        = "GP_Standard_D4s_v3"
+      version         = "16"
+      zone            = "2"
+      managed_key = {
+        key_type = "RSA"
+        key_size = 2048
+        key_opts = ["decrypt", "encrypt", "sign", "unwrapKey", "verify", "wrapKey"]
+      }
+      postgresql_databases = {
+        testdb = { charset = "UTF8", collation = "en_US.utf8" }
+      }
+    }
+  }
+
+  assert {
+    condition     = azurerm_postgresql_flexible_server.server.zone == "2"
+    error_message = "zone must be forwarded from flex_postgresql_server.zone"
+  }
+}
+
+run "nested_storage_format" {
+  command = plan
+
+  variables {
+    flex_postgresql_server = {
+      resource_group  = "Project"
+      key_vault_group = "Keyvault"
+      sku_name        = "GP_Standard_D4s_v3"
+      version         = "16"
+      storage = {
+        storage_mb = 65536
+      }
+      managed_key = {
+        key_type = "RSA"
+        key_size = 2048
+        key_opts = ["decrypt", "encrypt", "sign", "unwrapKey", "verify", "wrapKey"]
+      }
+      postgresql_databases = {
+        testdb = { charset = "UTF8", collation = "en_US.utf8" }
+      }
+    }
+  }
+
+  assert {
+    condition     = azurerm_postgresql_flexible_server.server.storage_mb == 65536
+    error_message = "storage.storage_mb (nested format) must be honored"
+  }
+}
+
+run "create_mode_geo_restore" {
+  command = plan
+
+  variables {
+    flex_postgresql_server = {
+      resource_group   = "Project"
+      key_vault_group  = "Keyvault"
+      sku_name         = "GP_Standard_D4s_v3"
+      version          = "16"
+      create_mode      = "GeoRestore"
+      source_server_id = "/subscriptions/00000000-0000-0000-0000-000000000002/resourceGroups/rg-project/providers/Microsoft.DBforPostgreSQL/flexibleServers/source-server"
+      managed_key = {
+        key_type = "RSA"
+        key_size = 2048
+        key_opts = ["decrypt", "encrypt", "sign", "unwrapKey", "verify", "wrapKey"]
+      }
+      postgresql_databases = {
+        testdb = { charset = "UTF8", collation = "en_US.utf8" }
+      }
+    }
+  }
+
+  assert {
+    condition     = azurerm_postgresql_flexible_server.server.create_mode == "GeoRestore"
+    error_message = "create_mode must be forwarded for non-Default modes"
+  }
+
+  assert {
+    condition     = azurerm_postgresql_flexible_server.server.source_server_id == "/subscriptions/00000000-0000-0000-0000-000000000002/resourceGroups/rg-project/providers/Microsoft.DBforPostgreSQL/flexibleServers/source-server"
+    error_message = "source_server_id must be forwarded when create_mode != Default"
+  }
+}
+

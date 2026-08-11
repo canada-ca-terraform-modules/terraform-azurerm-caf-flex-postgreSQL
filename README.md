@@ -15,8 +15,8 @@ Terraform CAF module for deploying an Azure PostgreSQL Flexible Server with Cust
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | ~> 5.0 |
-| <a name="provider_random"></a> [random](#provider\_random) | >= 3.0 |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 5.0.1 |
+| <a name="provider_random"></a> [random](#provider\_random) | 3.9.0 |
 
 ## Modules
 
@@ -49,13 +49,13 @@ Terraform CAF module for deploying an Azure PostgreSQL Flexible Server with Cust
 | <a name="input_group"></a> [group](#input\_group) | (Required) Character string defining the group for the target subscription | `string` | `"test"` | no |
 | <a name="input_key_vault"></a> [key\_vault](#input\_key\_vault) | (Required) List of key vault objects for the postgre SQL server. | `any` | `{}` | no |
 | <a name="input_location"></a> [location](#input\_location) | Azure location for the VM | `string` | `"canadacentral"` | no |
-| <a name="input_private_dns_zone_ids"></a> [private\_dns\_zone\_ids](#input\_private\_dns\_zone\_ids) | (Required) DNS configuration for the flexible postgre SQL server. | `any` | `null` | no |
+| <a name="input_private_dns_zone_ids"></a> [private\_dns\_zone\_ids](#input\_private\_dns\_zone\_ids) | (Optional) DNS configuration for the flexible postgre SQL server. Only used when delegate\_subnet\_id is set. | `any` | `null` | no |
 | <a name="input_project"></a> [project](#input\_project) | (Required) Character string defining the project for the target subscription | `string` | `"test"` | no |
 | <a name="input_resource_groups"></a> [resource\_groups](#input\_resource\_groups) | (Required) Resource group object for the flexible postgre SQL server. | `any` | `{}` | no |
 | <a name="input_subnets"></a> [subnets](#input\_subnets) | (Required) List of subnet objects for the postgre SQL server. | `any` | `{}` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags that will be applied to every associated VM resource | `map(string)` | `{}` | no |
 | <a name="input_userDefinedString"></a> [userDefinedString](#input\_userDefinedString) | (Required) User defined portion value for the name of the VM. | `string` | `"test"` | no |
-| <a name="input_user_data"></a> [user\_data](#input\_user\_data) | Base64 encoded file representing user data script for the VM | `any` | `null` | no |
+| <a name="input_user_data"></a> [user\_data](#input\_user\_data) | Base64 encoded file representing user data script for the VM. Unused by this module - kept for interface parity with sibling CAF VM modules. | `any` | `null` | no |
 
 ## Outputs
 

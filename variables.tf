@@ -41,7 +41,7 @@ variable "userDefinedString" {
 
 
 variable "private_dns_zone_ids" {
-  description = "(Required) DNS configuration for the flexible postgre SQL server."
+  description = "(Optional) DNS configuration for the flexible postgre SQL server. Only used when delegate_subnet_id is set."
   type        = any
   default     = null
 }
@@ -75,7 +75,7 @@ variable "key_vault" {
 }
 
 variable "user_data" {
-  description = "Base64 encoded file representing user data script for the VM"
+  description = "Base64 encoded file representing user data script for the VM. Unused by this module - kept for interface parity with sibling CAF VM modules."
   type        = any
   default     = null
   #tflint-ignore: terraform_unused_declarations
