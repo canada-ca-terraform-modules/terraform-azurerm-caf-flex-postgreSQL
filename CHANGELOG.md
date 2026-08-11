@@ -53,11 +53,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   complexity policy at deploy time (new servers only - `lifecycle.ignore_changes`
   prevents this from forcing a password replacement, and a live admin
   password reset, on servers already deployed before this floor was added).
-- Considered, then deliberately did **not** add `content_type` to
-  `azurerm_key_vault_secret.password`: although non-disruptive (in-place,
-  no new secret version, no value change), it still surfaces as a diff on
-  every already-deployed server. Left out so this upgrade has zero plan
-  impact on existing resources - confirmed via a live upgrade probe.
+- `azurerm_key_vault_secret.password` now sets `content_type = "text/plain"`,
+  with `lifecycle.ignore_changes` on that attribute (same pattern as the
+  `random_password` fix above): new secrets get `content_type` set at
+  creation, while already-deployed secrets keep whatever they have and see
+  no diff.
 - Replaced the any-to-any (`0.0.0.0` → `255.255.255.255`) example firewall
   rule in `ESLZ/flex_postgre_sql.tfvars` with a representative private range.
 - Clarified `private_dns_zone_ids`'s description (was mislabeled `(Required)`
