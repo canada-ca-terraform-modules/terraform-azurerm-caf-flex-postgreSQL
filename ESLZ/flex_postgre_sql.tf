@@ -7,7 +7,7 @@ variable "flex_postgre_sql_servers" {
 module "postgre_sql_server" {
 
   for_each               = var.flex_postgre_sql_servers
-  source                 = "github.com/canada-ca-terraform-modules/terraform-azurerm-caf-flex-postgreSQL.git?ref=v1.1.0"
+  source                 = "github.com/canada-ca-terraform-modules/terraform-azurerm-caf-flex-postgreSQL.git?ref=v1.2.0"
   location               = var.location
   env                    = var.env
   group                  = var.group

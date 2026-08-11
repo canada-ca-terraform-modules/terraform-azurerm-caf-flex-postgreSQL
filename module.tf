@@ -144,7 +144,7 @@ resource "azurerm_key_vault_key" "key" {
 
 # Calls this module if we need a private endpoint attached to the storage account
 module "private_endpoint" {
-  source   = "github.com/canada-ca-terraform-modules/terraform-azurerm-caf-private_endpoint.git?ref=v1.1.0"
+  source   = "github.com/canada-ca-terraform-modules/terraform-azurerm-caf-private_endpoint.git?ref=v1.2.0"
   for_each = try(var.flex_postgresql_server.private_endpoint, {})
 
   name                           = "${local.postgre-sql-server-name}-${each.key}"
