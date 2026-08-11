@@ -4,12 +4,12 @@ flex_postgre_sql_servers = {
     key_vault_group = "Keyvault"
     # delegate_subnet_id = "/subscriptions/edc8d26f-9061-4fef-9e99-019ade8ba930/resourceGroups/G3Dc-CTO_Test1_Network-rg/providers/Microsoft.Network/virtualNetworks/G3DcCNR-CTO_Test1-vnet/subnets/postgre-sql" #(Optional) The ID of the virtual network subnet to create the PostgreSQL Flexible Server. The provided subnet should not have any other resource deployed in it and this subnet will be delegated to the PostgreSQL Flexible Server, if not already delegated. Changing this forces a new PostgreSQL Flexible Server to be created.
     # delegate_private_dns_zone_id = "/subscriptions/edc8d26f-9061-4fef-9e99-019ade8ba930/resourceGroups/G3Dc-CTO_Test1_Network-rg/providers/Microsoft.Network/privateDnsZones/privatelink.postgres.database.azure.com" # (Optional) The ID of the private DNS zone to create the PostgreSQL Flexible Server.
-    sku_name                      = "GP_Standard_D4s_v3"
-    administrator_login           = "psqladmin"
-    storage_mb                    = 32768 #Max storage allowed for a server. Possible values are 32768 MB(32GiB), 65536, 131072, 262144, 524288, 1048576, 2097152, 4193280, 4194304, 8388608, 16777216 and 33553408.
-    backup_retention_days         = 7
-    geo_redundant_backup_enabled  = false
-    create_mode                   = "Default"
+    sku_name                     = "GP_Standard_D4s_v3"
+    administrator_login          = "psqladmin"
+    storage_mb                   = 32768 #Max storage allowed for a server. Possible values are 32768 MB(32GiB), 65536, 131072, 262144, 524288, 1048576, 2097152, 4193280, 4194304, 8388608, 16777216 and 33553408.
+    backup_retention_days        = 7
+    geo_redundant_backup_enabled = false
+    create_mode                  = "Default"
     # source_server_id             = null #(Optional) For creation modes other than Default, the source server ID to use.
     public_network_access_enabled = false
     zone                          = "1" #(Optional) Specifies the Availability Zone in which this MySQL Flexible Server should be located. Possible values are 1, 2 and 3.
@@ -84,10 +84,13 @@ flex_postgre_sql_servers = {
       }
     }
 
+    # Example only - scope firewall_rules to the narrowest real range you
+    # need. Never use an any-to-any (0.0.0.0 -> 255.255.255.255) rule; it
+    # opens the server to the entire public internet.
     firewall_rules = {
       rule1 = {
-        start_ip_address = "0.0.0.0"
-        end_ip_address   = "255.255.255.255"
+        start_ip_address = "10.0.0.0"
+        end_ip_address   = "10.255.255.255"
       }
     }
     managed_key = { #Manages a Customer Managed Key for a PostgreSQL Server

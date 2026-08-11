@@ -11,9 +11,9 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v7.0.1
 
-      - uses: hashicorp/setup-terraform@v4.0.0
+      - uses: hashicorp/setup-terraform@v4.0.1
 
       - name: Terraform Format
         run: terraform fmt -check -recursive
@@ -27,7 +27,7 @@ jobs:
       - name: Setup TFLint
         uses: terraform-linters/setup-tflint@v4
         with:
-          tflint_version: v0.55.0
+          tflint_version: v0.64.0
 
       - name: TFLint Init
         run: tflint --init
@@ -36,4 +36,4 @@ jobs:
         run: tflint --recursive
 
       - name: Terraform Test
-        run: terraform test
+        run: terraform test -test-directory=tests
