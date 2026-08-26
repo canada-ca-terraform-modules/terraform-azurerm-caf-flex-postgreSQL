@@ -39,6 +39,7 @@ provider "azurerm" {
 module "flex_postgresql" {
   # PR code and baseline code are two on-disk checkouts of this same repo,
   # not two resolved git refs - no pinned ?ref, no version toggle here.
+  # (no-op touch: triggers live-test.yml's path filter for PR B)
   source = "../../"
 
   # Waits for the deploying principal's own Key Vault Administrator grant
