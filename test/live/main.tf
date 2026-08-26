@@ -5,6 +5,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = ">= 4.0"
     }
+    time = {
+      source  = "hashicorp/time"
+      version = ">= 0.9"
+    }
   }
 
   # Empty on purpose: the state file path is supplied at `terraform init`
